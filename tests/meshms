@@ -195,10 +195,10 @@ setup_MessageThreading() {
    foreach_instance +A +B create_single_identity
    foreach_instance +A +B setup_logging
    set_instance +A
-   executeOk_servald meshms send message $SIDA $SIDB "Hello can you hear me"
+   executeOk_servald meshms send message --mark-known $SIDA $SIDB "Hello can you hear me"
    executeOk_servald meshms send message $SIDA $SIDB "Still waiting"
    set_instance +B
-   executeOk_servald meshms send message $SIDB $SIDA "Help Im trapped in a test case factory"
+   executeOk_servald meshms send message --mark-known $SIDB $SIDA "Help Im trapped in a test case factory"
    executeOk_servald meshms send message $SIDB $SIDA "Never mind"
    start_servald_instances +A +B
 }
@@ -230,9 +230,9 @@ setup_reorderList() {
    create_identities 5
    setup_logging
    # ensure conversations are known
-   executeOk_servald meshms send message $SIDA1 $SIDA2 "Start"
-   executeOk_servald meshms send message $SIDA1 $SIDA3 "Start"
-   executeOk_servald meshms send message $SIDA1 $SIDA4 "Start"
+   executeOk_servald meshms send message --mark-known $SIDA1 $SIDA2 "Start"
+   executeOk_servald meshms send message --mark-known $SIDA1 $SIDA3 "Start"
+   executeOk_servald meshms send message --mark-known $SIDA1 $SIDA4 "Start"
 }
 test_reorderList() {
    # new incoming messages should bump to the top
@@ -262,10 +262,10 @@ setup_listConversations() {
    create_identities 5
    setup_logging
    # create 3 threads, with all permutations of incoming and outgoing messages
-   executeOk_servald meshms send message $SIDA1 $SIDA2 "Message1"
-   executeOk_servald meshms send message $SIDA3 $SIDA1 "Message2"
-   executeOk_servald meshms send message $SIDA1 $SIDA4 "Message3"
-   executeOk_servald meshms send message $SIDA4 $SIDA1 "Message4"
+   executeOk_servald meshms send message --mark-known $SIDA1 $SIDA2 "Message1"
+   executeOk_servald meshms send message --mark-known $SIDA3 $SIDA1 "Message2"
+   executeOk_servald meshms send message --mark-known $SIDA1 $SIDA4 "Message3"
+   executeOk_servald meshms send message --mark-known $SIDA4 $SIDA1 "Message4"
 }
 test_listConversations() {
    executeOk_servald meshms list conversations --include-message $SIDA1
