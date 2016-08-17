@@ -124,10 +124,10 @@ setup_MeshmsListConversations() {
    IDENTITY_COUNT=5
    setup
    # create 3 threads, with all permutations of incoming and outgoing messages
-   executeOk_servald meshms send message $SIDA1 $SIDA2 "Message1"
-   executeOk_servald meshms send message $SIDA3 $SIDA1 "Message2"
-   executeOk_servald meshms send message $SIDA1 $SIDA4 "Message3"
-   executeOk_servald meshms send message $SIDA4 $SIDA1 "Message4"
+   executeOk_servald meshms send message --mark-known $SIDA1 $SIDA2 "Message1"
+   executeOk_servald meshms send message --mark-known $SIDA3 $SIDA1 "Message2"
+   executeOk_servald meshms send message --mark-known $SIDA1 $SIDA4 "Message3"
+   executeOk_servald meshms send message --mark-known $SIDA4 $SIDA1 "Message4"
 }
 test_MeshmsListConversations() {
    executeOk curl \
@@ -164,12 +164,13 @@ test_MeshmsListConversations() {
                {  my_sid: \"$SIDA1\",
                   their_sid: \"$SIDA4\",
                   read: false,
-                  last_message: 20,
+                  last_message: 14,
                   read_offset: 0
                }
             ])"
    # mark all incoming messages as read
    executeOk_servald meshms read messages $SIDA1
+   executeOk_servald meshms read messages $SIDA1 $SIDA3
    tfw_cat --stderr
    executeOk curl \
          --silent --fail --show-error \
@@ -205,8 +206,8 @@ test_MeshmsListConversations() {
                {  my_sid: \"$SIDA1\",
                   their_sid: \"$SIDA4\",
                   read: true,
-                  last_message: 20,
-                  read_offset: 20
+                  last_message: 14,
+                  read_offset: 14
                }
             ])"
 }
@@ -589,9 +590,9 @@ setup_MeshmsReadAllConversations() {
    IDENTITY_COUNT=5
    setup
    # create 3 threads, with all permutations of incoming and outgoing messages
-   executeOk_servald meshms send message $SIDA1 $SIDA2 "Message1"
+   executeOk_servald meshms send message --mark-known $SIDA1 $SIDA2 "Message1"
    executeOk_servald meshms send message $SIDA3 $SIDA1 "Message2"
-   executeOk_servald meshms send message $SIDA1 $SIDA4 "Message3"
+   executeOk_servald meshms send message --mark-known $SIDA1 $SIDA4 "Message3"
    executeOk_servald meshms send message $SIDA4 $SIDA1 "Message4"
    executeOk_servald meshms list conversations $SIDA1
    assertStdoutGrep --stderr --matches=1 ":$SIDA2::0:0\$"
